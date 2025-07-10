@@ -18,7 +18,7 @@ y1 = (screen_h - crop_h) // 2
 
 # 模型输入尺寸
 model_size = 640
-model = YOLO("runs/detect/train/weights/best.pt").to(device)
+model = YOLO("CS2.pt").to(device)
 
 def to_tensor(img_np):
     # 1. 缩放到 model_size×model_size
@@ -34,7 +34,6 @@ cv.namedWindow('cs', cv.WINDOW_NORMAL)
 cv.setWindowProperty('cs', cv.WND_PROP_TOPMOST, 1)
 cv.resizeWindow('cs', crop_w , crop_h)
 
-# 替换为 mss
 with mss.mss() as sct:
     monitor = {"top": y1, "left": x1, "width": crop_w, "height": crop_h}
 
@@ -43,16 +42,13 @@ with mss.mss() as sct:
             # 使用 mss 截图
             screen = np.array(sct.grab(monitor))
             img = cv.cvtColor(screen, cv.COLOR_BGRA2BGR)
-
             # 3. 预处理并转换为 Tensor
             img_tensor = to_tensor(img)
-
             # 4. 推理并绘制检测框
             with torch.no_grad():
                 output = model(img_tensor)
             result = output[0]
             plot_img = result.plot()
-
             cv.imshow('cs', plot_img)
             if cv.waitKey(1) == ord('q'):
                 break
