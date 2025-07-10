@@ -1,0 +1,5 @@
+path: D:\yolo_cs\train_data
+train: images/train
+val: images/val
+nc: 2
+name: ['body','head']
